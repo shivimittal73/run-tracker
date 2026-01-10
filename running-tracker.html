@@ -462,6 +462,18 @@
             background: #F5F5F5;
             border-radius: 6px;
             border-left: 3px solid #1976D2;
+            position: relative;
+        }
+
+        .plan-run-item.completed {
+            background: #E8F5E9;
+            border-left-color: #4CAF50;
+        }
+
+        .plan-run-item.missed {
+            background: #FFEBEE;
+            border-left-color: #F44336;
+            opacity: 0.7;
         }
 
         .plan-day {
@@ -469,6 +481,9 @@
             font-weight: 500;
             color: #1976D2;
             margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .plan-workout {
@@ -478,6 +493,35 @@
 
         .plan-pace {
             font-size: 12px;
+            color: #757575;
+        }
+
+        .run-status {
+            font-size: 16px;
+        }
+
+        .actual-pace {
+            font-size: 11px;
+            color: #4CAF50;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .week-completion {
+            font-size: 11px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .week-completion.complete {
+            color: #4CAF50;
+        }
+
+        .week-completion.partial {
+            color: #FF9800;
+        }
+
+        .week-completion.none {
             color: #757575;
         }
 
@@ -729,8 +773,11 @@
         <div class="content">
             <div class="card">
                 <div class="card-header">14-Week Training Plan</div>
-                <div style="font-size: 14px; color: #757575; margin-top: 8px;">
+                <div style="font-size: 14px; color: #757575; margin-top: 8px; margin-bottom: 12px;">
                     Tap any week to see the scheduled runs
+                </div>
+                <div id="overall-progress">
+                    <!-- Overall progress will be shown here -->
                 </div>
             </div>
 
@@ -967,6 +1014,7 @@
 
             // Update data when switching to screens
             if (screenName === 'dashboard') updateDashboard();
+            if (screenName === 'plan') generateTrainingPlan();
             if (screenName === 'history') updateHistory();
             if (screenName === 'reflect') updateReflections();
         }
@@ -1320,7 +1368,24 @@
 
         function generateTrainingPlan() {
             const planAccordion = document.getElementById('plan-accordion');
+            const overallProgress = document.getElementById('overall-progress');
             const currentWeek = getCurrentWeek();
+            const runs = JSON.parse(localStorage.getItem('runs') || '[]');
+
+            // Calculate overall progress
+            const totalScheduled = 56; // 14 weeks * 4 runs per week
+            const completedRuns = runs.filter(r => r.completed);
+            const overallCompletion = Math.round((completedRuns.length / totalScheduled) * 100);
+
+            // Generate overall progress summary
+            overallProgress.innerHTML = `
+                <div style="background: #E3F2FD; padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+                    <div style="font-size: 14px; font-weight: 500; margin-bottom: 8px;">Overall Progress: ${completedRuns.length}/56 runs completed (${overallCompletion}%)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${overallCompletion}%"></div>
+                    </div>
+                </div>
+            `;
 
             const phaseInfo = {
                 1: { name: 'Rebuild Base', class: 'phase-1' },
@@ -1339,11 +1404,46 @@
                 14: { name: 'Taper Week', class: 'phase-4' }
             };
 
+            // Helper function to get week start date
+            function getWeekStartDate(week) {
+                const start = new Date(START_DATE);
+                start.setDate(start.getDate() + (week - 1) * 7);
+                return start;
+            }
+
+            // Helper function to get date for specific day in week
+            function getDateForDay(week, dayName) {
+                const weekStart = getWeekStartDate(week);
+                const dayMap = { 'Monday': 1, 'Wednesday': 3, 'Friday': 5, 'Saturday': 6, 'Sunday': 0 };
+                const targetDay = dayMap[dayName];
+
+                const date = new Date(weekStart);
+                const currentDay = date.getDay();
+                let daysToAdd = targetDay - currentDay;
+                if (daysToAdd < 0) daysToAdd += 7;
+                date.setDate(date.getDate() + daysToAdd);
+
+                return date.toISOString().split('T')[0];
+            }
+
             let html = '';
             for (let week = 1; week <= 14; week++) {
                 const phase = phaseInfo[week];
                 const isCurrent = week === currentWeek;
                 const weekPlan = TRAINING_PLAN[week];
+
+                // Calculate week completion
+                const weekRuns = runs.filter(r => r.week === week);
+                const completedRuns = weekRuns.filter(r => r.completed);
+                const completionPercent = Math.round((completedRuns.length / weekPlan.length) * 100);
+
+                let completionClass = 'none';
+                let completionText = `0/${weekPlan.length} completed`;
+
+                if (completedRuns.length > 0) {
+                    completionClass = completedRuns.length === weekPlan.length ? 'complete' : 'partial';
+                    completionText = `${completedRuns.length}/${weekPlan.length} completed`;
+                }
 
                 html += `
                     <div class="week-accordion">
@@ -1354,18 +1454,44 @@
                                     <span class="phase-badge ${phase.class}">${phase.name}</span>
                                 </div>
                                 <div class="week-subtitle">${weekPlan.length} runs scheduled</div>
+                                <div class="week-completion ${completionClass}">${completionText}</div>
                             </div>
                             <div class="week-arrow" id="arrow-${week}">▶</div>
                         </div>
                         <div class="week-content" id="content-${week}">
                 `;
 
-                weekPlan.forEach(run => {
+                weekPlan.forEach(plannedRun => {
+                    // Find matching logged run for this day
+                    const expectedDate = getDateForDay(week, plannedRun.day);
+                    const loggedRun = runs.find(r =>
+                        r.date === expectedDate && r.week === week
+                    );
+
+                    let statusClass = '';
+                    let statusIcon = '';
+                    let actualPaceHTML = '';
+
+                    if (loggedRun) {
+                        if (loggedRun.completed) {
+                            statusClass = 'completed';
+                            statusIcon = '✅';
+                            actualPaceHTML = `<div class="actual-pace">Actual: ${loggedRun.distance}km in ${loggedRun.duration} min (${formatPace(loggedRun.pace)}/km)</div>`;
+                        } else {
+                            statusClass = 'missed';
+                            statusIcon = '❌';
+                        }
+                    }
+
                     html += `
-                        <div class="plan-run-item">
-                            <div class="plan-day">${run.day}</div>
-                            <div class="plan-workout">${run.workout}</div>
-                            <div class="plan-pace">Target Pace: ${run.targetPace}</div>
+                        <div class="plan-run-item ${statusClass}">
+                            <div class="plan-day">
+                                <span>${plannedRun.day}</span>
+                                <span class="run-status">${statusIcon}</span>
+                            </div>
+                            <div class="plan-workout">${plannedRun.workout}</div>
+                            <div class="plan-pace">Target Pace: ${plannedRun.targetPace}</div>
+                            ${actualPaceHTML}
                         </div>
                     `;
                 });
