@@ -873,7 +873,7 @@
             border-radius: 24px;
             display: flex;
             justify-content: space-around;
-            padding: 12px 8px;
+            padding: 12px 2px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
                         0 4px 16px rgba(0, 0, 0, 0.3),
                         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -884,7 +884,7 @@
         .nav-item {
             flex: 1;
             text-align: center;
-            padding: 12px 8px;
+            padding: 12px 4px;
             color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
             cursor: pointer;
@@ -907,7 +907,7 @@
         }
 
         .nav-icon {
-            font-size: 26px;
+            font-size: 24px;
             display: block;
             margin-bottom: 4px;
         }
@@ -1477,6 +1477,15 @@
                     For your first 5.6km, we suggest targeting <strong style="color: #212121;">35-40 minutes</strong>.
                     This is a comfortable, achievable pace that focuses on completing the distance.
                     You can adjust this below!
+                </div>
+            </div>
+
+            <!-- Experienced runner suggestion (shown if experienced but unsure of target) -->
+            <div id="experienced-suggestion" class="card hidden" style="background: #E3F2FD; border-left: 4px solid #1976D2; margin-bottom: 24px; color: #212121;">
+                <strong style="color: #1565C0;">💡 Target Time Recommendation</strong><br>
+                <div style="font-size: 14px; margin-top: 8px; line-height: 1.5; color: #424242;">
+                    If you're unsure, a <strong style="color: #1565C0;">30-32 minute</strong> finish time is a solid goal for most runners with some experience.
+                    This translates to roughly 5:20-5:40 per km pace. You can adjust this below based on your fitness level!
                 </div>
             </div>
 
@@ -2757,22 +2766,27 @@
             saveOnboardingProgress();
             nextOnboardingStep();
 
-            // Show beginner suggestion if new runner, hide if experienced
+            // Show appropriate suggestion based on experience level
             setTimeout(() => {
-                const suggestionEl = document.getElementById('beginner-suggestion');
-                if (suggestionEl) {
-                    if (selectedExperience === 'no') {
-                        suggestionEl.classList.remove('hidden');
-                        // Pre-fill with beginner suggestion
-                        document.getElementById('target-minutes').value = 37;
-                        document.getElementById('target-seconds').value = 0;
-                        updateGoalFeedback();
-                    } else {
-                        suggestionEl.classList.add('hidden');
-                        // Clear pre-filled values if user switches back from "No" to "Yes"
-                        document.getElementById('target-minutes').value = '';
-                        document.getElementById('target-seconds').value = '';
-                    }
+                const beginnerSuggestionEl = document.getElementById('beginner-suggestion');
+                const experiencedSuggestionEl = document.getElementById('experienced-suggestion');
+
+                if (selectedExperience === 'no') {
+                    // New runner - show beginner suggestion
+                    if (beginnerSuggestionEl) beginnerSuggestionEl.classList.remove('hidden');
+                    if (experiencedSuggestionEl) experiencedSuggestionEl.classList.add('hidden');
+                    // Pre-fill with beginner suggestion
+                    document.getElementById('target-minutes').value = 37;
+                    document.getElementById('target-seconds').value = 0;
+                    updateGoalFeedback();
+                } else {
+                    // Experienced runner - show experienced suggestion
+                    if (beginnerSuggestionEl) beginnerSuggestionEl.classList.add('hidden');
+                    if (experiencedSuggestionEl) experiencedSuggestionEl.classList.remove('hidden');
+                    // Pre-fill with moderate experienced target
+                    document.getElementById('target-minutes').value = 31;
+                    document.getElementById('target-seconds').value = 0;
+                    updateGoalFeedback();
                 }
             }, 100);
         }
@@ -3645,7 +3659,7 @@
                         <span class="accordion-icon" id="accordion-icon-${week}">▼</span>
                     </div>
                     <div class="accordion-content" id="accordion-content-${week}">
-                        ${weekWorkouts.map(workout => {
+                        ${weekWorkouts.sort((a, b) => new Date(a.date) - new Date(b.date)).map(workout => {
                             const date = new Date(workout.date);
                             const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                             const isCompleted = runs.some(r => r.date === workout.date && r.completed);
