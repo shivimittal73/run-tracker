@@ -397,6 +397,119 @@
             font-weight: 500;
             color: #1976D2;
         }
+
+        .week-accordion {
+            margin-bottom: 12px;
+        }
+
+        .week-header {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .week-header:active {
+            background: #F5F5F5;
+        }
+
+        .week-header.current {
+            background: #E3F2FD;
+            border-left: 4px solid #1976D2;
+        }
+
+        .week-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .week-subtitle {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 2px;
+        }
+
+        .week-arrow {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .week-arrow.expanded {
+            transform: rotate(90deg);
+        }
+
+        .week-content {
+            display: none;
+            background: white;
+            padding: 16px;
+            margin-top: -8px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .week-content.visible {
+            display: block;
+        }
+
+        .plan-run-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #F5F5F5;
+            border-radius: 6px;
+            border-left: 3px solid #1976D2;
+        }
+
+        .plan-day {
+            font-size: 12px;
+            font-weight: 500;
+            color: #1976D2;
+            margin-bottom: 4px;
+        }
+
+        .plan-workout {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .plan-pace {
+            font-size: 12px;
+            color: #757575;
+        }
+
+        .phase-badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: #E0E0E0;
+            color: #616161;
+            margin-left: 8px;
+        }
+
+        .phase-badge.phase-1 {
+            background: #C8E6C9;
+            color: #2E7D32;
+        }
+
+        .phase-badge.phase-2 {
+            background: #FFECB3;
+            color: #F57F17;
+        }
+
+        .phase-badge.phase-3 {
+            background: #FFCCBC;
+            color: #D84315;
+        }
+
+        .phase-badge.phase-4 {
+            background: #F8BBD0;
+            color: #C2185B;
+        }
     </style>
 </head>
 <body>
@@ -611,15 +724,35 @@
         </div>
     </div>
 
+    <!-- Plan Screen -->
+    <div id="plan-screen" class="screen">
+        <div class="content">
+            <div class="card">
+                <div class="card-header">14-Week Training Plan</div>
+                <div style="font-size: 14px; color: #757575; margin-top: 8px;">
+                    Tap any week to see the scheduled runs
+                </div>
+            </div>
+
+            <div id="plan-accordion">
+                <!-- Weeks will be generated dynamically -->
+            </div>
+        </div>
+    </div>
+
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchScreen('dashboard')">
             <span class="nav-icon">📊</span>
             <span class="nav-label">Dashboard</span>
         </div>
+        <div class="nav-item" onclick="switchScreen('plan')">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label">Plan</span>
+        </div>
         <div class="nav-item" onclick="switchScreen('log')">
             <span class="nav-icon">➕</span>
-            <span class="nav-label">Log Run</span>
+            <span class="nav-label">Log</span>
         </div>
         <div class="nav-item" onclick="switchScreen('history')">
             <span class="nav-icon">📜</span>
@@ -766,6 +899,7 @@
             updateDashboard();
             updateHistory();
             updateReflections();
+            generateTrainingPlan();
 
             // Load saved reflection if exists
             loadReflection();
@@ -827,7 +961,7 @@
             // Update nav active state
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             const navItems = document.querySelectorAll('.nav-item');
-            const screenMap = ['dashboard', 'log', 'history', 'reflect'];
+            const screenMap = ['dashboard', 'plan', 'log', 'history', 'reflect'];
             const index = screenMap.indexOf(screenName);
             if (index >= 0) navItems[index].classList.add('active');
 
@@ -1182,6 +1316,85 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function generateTrainingPlan() {
+            const planAccordion = document.getElementById('plan-accordion');
+            const currentWeek = getCurrentWeek();
+
+            const phaseInfo = {
+                1: { name: 'Rebuild Base', class: 'phase-1' },
+                2: { name: 'Rebuild Base', class: 'phase-1' },
+                3: { name: 'Rebuild Base', class: 'phase-1' },
+                4: { name: 'Rebuild Base', class: 'phase-1' },
+                5: { name: 'Build Endurance', class: 'phase-2' },
+                6: { name: 'Build Endurance', class: 'phase-2' },
+                7: { name: 'Build Endurance', class: 'phase-2' },
+                8: { name: 'Build Endurance', class: 'phase-2' },
+                9: { name: 'Build Endurance', class: 'phase-2' },
+                10: { name: 'Race Sharpening', class: 'phase-3' },
+                11: { name: 'Race Sharpening', class: 'phase-3' },
+                12: { name: 'Race Sharpening', class: 'phase-3' },
+                13: { name: 'Race Sharpening', class: 'phase-3' },
+                14: { name: 'Taper Week', class: 'phase-4' }
+            };
+
+            let html = '';
+            for (let week = 1; week <= 14; week++) {
+                const phase = phaseInfo[week];
+                const isCurrent = week === currentWeek;
+                const weekPlan = TRAINING_PLAN[week];
+
+                html += `
+                    <div class="week-accordion">
+                        <div class="week-header ${isCurrent ? 'current' : ''}" onclick="toggleWeek(${week})">
+                            <div>
+                                <div class="week-title">
+                                    Week ${week}
+                                    <span class="phase-badge ${phase.class}">${phase.name}</span>
+                                </div>
+                                <div class="week-subtitle">${weekPlan.length} runs scheduled</div>
+                            </div>
+                            <div class="week-arrow" id="arrow-${week}">▶</div>
+                        </div>
+                        <div class="week-content" id="content-${week}">
+                `;
+
+                weekPlan.forEach(run => {
+                    html += `
+                        <div class="plan-run-item">
+                            <div class="plan-day">${run.day}</div>
+                            <div class="plan-workout">${run.workout}</div>
+                            <div class="plan-pace">Target Pace: ${run.targetPace}</div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            planAccordion.innerHTML = html;
+
+            // Auto-expand current week
+            if (currentWeek >= 1 && currentWeek <= 14) {
+                setTimeout(() => toggleWeek(currentWeek), 100);
+            }
+        }
+
+        function toggleWeek(week) {
+            const content = document.getElementById(`content-${week}`);
+            const arrow = document.getElementById(`arrow-${week}`);
+
+            if (content.classList.contains('visible')) {
+                content.classList.remove('visible');
+                arrow.classList.remove('expanded');
+            } else {
+                content.classList.add('visible');
+                arrow.classList.add('expanded');
+            }
         }
 
         // Register service worker
