@@ -1,4 +1,4 @@
-const CACHE_NAME = 'run-tracker-v1';
+const CACHE_NAME = 'run-tracker-v2';
 const urlsToCache = [
   '/running-tracker.html',
   '/manifest.json'
