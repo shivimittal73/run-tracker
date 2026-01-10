@@ -80,6 +80,11 @@
 - Visual distinction:
   - Green border for completed runs
   - Red border for missed runs
+- **Delete functionality:**
+  - Delete button on each logged run
+  - Confirmation dialog before deletion
+  - Updates all views (History, Dashboard, Plan) after deletion
+  - Useful for correcting accidental logs or incorrect stats
 - Empty state for no data
 
 ### 5. Reflections Screen 💭
@@ -177,7 +182,7 @@ vercel --prod --yes
 ❌ **Cloud Sync** - Intentionally local-only for privacy/simplicity
 ❌ **Multi-device Support** - Single-device by design
 ❌ **Data Export** - Not required for v1.0
-❌ **Edit Logged Runs** - Keep simple; re-log if needed
+❌ **Edit Logged Runs** - Delete and re-log provides similar functionality
 ❌ **Photo Uploads** - Out of scope
 ❌ **GPS Integration** - Apple Watch provides this
 ❌ **Social Features** - Not needed
@@ -311,8 +316,9 @@ vercel --prod --yes
 2. **Single Device Only:** No sync between devices
    - Use one primary device (Pixel 10 Pro)
 
-3. **No Edit Function:** Cannot edit logged runs
-   - Workaround: Log again with correct data
+3. **No Edit Function:** Cannot edit logged runs directly
+   - Workaround: Delete incorrect run and re-log with correct data
+   - Delete button available on each run in History screen
 
 4. **No Data Export:** Cannot export to CSV/Excel
    - Workaround: Screenshots or manual transcription
@@ -367,6 +373,22 @@ vercel --prod --yes
 - GitHub repository public
 - Tested on Google Pixel 10 Pro
 
+### v1.1 (January 10, 2026)
+**Status:** ✅ Deployed
+
+**Features:**
+- Delete functionality for logged runs
+- Delete button on each run in History screen
+- Confirmation dialog before deletion
+- Auto-refresh all views after deletion (History, Dashboard, Plan)
+- Helps correct accidental logs or incorrect stats
+
+**Commits:**
+1. Add delete feature for logged runs with confirmation
+
+**Deployment:**
+- Deployed to Vercel production
+
 ---
 
 ## Future Considerations (Post-Race)
@@ -377,7 +399,6 @@ vercel --prod --yes
 - 📊 Export data to CSV
 - 📈 Advanced analytics (pace trends, weekly volume charts)
 - 🎯 New race support (reusable for future races)
-- 🔄 Edit logged runs functionality
 - 📱 Share achievements (race results)
 
 **If User Requests:**

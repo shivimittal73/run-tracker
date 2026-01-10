@@ -2,7 +2,9 @@
 
 ## Executive Summary
 
-This document outlines the complete requirements for a running training tracker system designed for Shivi to prepare for the JP Morgan Corporate Challenge 5.6km race on April 16, 2026. The system includes both an Excel-based tracking spreadsheet and a Progressive Web App (PWA) for mobile tracking.
+This document outlines the complete requirements for a running training tracker system designed for Shivi to prepare for the JP Morgan Corporate Challenge 5.6km race on April 16, 2026.
+
+**Implementation Note:** A Progressive Web App (PWA) was built instead of an Excel tracker. See PROJECT_STATUS.md for actual implementation details.
 
 ---
 
@@ -361,105 +363,14 @@ This document outlines the complete requirements for a running training tracker 
 
 ## 4. Technical Requirements - Excel Tracker
 
-### 4.1 Spreadsheet Structure
+**Implementation Decision:** Excel tracker was NOT built. The PWA (Section 5) provides all necessary functionality for tracking runs, reflections, and progress. See PROJECT_STATUS.md for details on what was actually implemented.
 
-**File Format:** .xlsx (Excel/Google Sheets compatible)  
-**File Name:** JP_Morgan_Run_Training_Tracker.xlsx
+**Rationale:**
+- PWA provides better mobile experience
+- Real-time progress tracking
+- No need to maintain two systems
+- Simpler for user (single app vs app + spreadsheet)
 
-**4 Sheets Required:**
-
-#### Sheet 1: Training Plan
-**Purpose:** Master schedule with all 56 runs
-
-**Columns:**
-1. Week (1-14)
-2. Date (formatted as "Jan 13")
-3. Day (Monday, Wednesday, Friday, Sunday, Saturday for race day)
-4. Workout Type (Easy Run, Tempo, Intervals, Speed, Long Run, Rest, RACE DAY)
-5. Description (full workout details)
-6. Target Pace (e.g., "6:30-7:00/km")
-7. Completed? (user checkbox/input)
-8. Actual Time (user input - minutes)
-9. Actual Pace (user input - min/km)
-10. Notes (user freeform text)
-
-**Formatting:**
-- Color-coded by workout type:
-  - Easy/Rest: Light gray (#E7E6E6)
-  - Tempo/Race Pace: Light yellow (#FFF2CC)
-  - Intervals/Speed: Light orange (#FCE4D6)
-  - Long Run: Light green (#D9EAD3)
-  - RACE DAY: Red (#FF6B6B)
-- Header row: Blue (#4472C4) with white text
-- Freeze panes on header row
-- Borders on all cells
-- Text wrap enabled
-
-**Start Date:** Monday, January 13, 2026
-
-#### Sheet 2: Weekly Reflections
-**Purpose:** Sunday night check-ins
-
-**Columns:**
-1. Week (1-14)
-2. Dates (e.g., "Jan 13 - Jan 19")
-3. Runs Completed (✓) - user input
-4. Total Runs Scheduled (always 4)
-5. Completion % (calculated from column 3)
-6. Bedtime Discipline? (user yes/no)
-7. What almost stopped me? (user freeform)
-8. What worked well? (user freeform)
-9. Overall Rating (1-5) (user dropdown)
-
-**Pre-populated:** 14 rows for all weeks with date ranges calculated
-
-#### Sheet 3: Daily Habits
-**Purpose:** Quick daily tracking
-
-**Columns:**
-1. Date (all 98 days from Jan 13 - Apr 16)
-2. Day (Monday-Sunday)
-3. Run Scheduled? (YES/NO - pre-populated)
-4. Run Completed? (user input)
-5. In bed by 10:30pm? (user input)
-6. Woke up on time? (user input)
-7. Hydrated well? (user input)
-8. Felt energized? (user input)
-9. Notes (user freeform)
-
-**Formatting:**
-- Run scheduled days highlighted in green
-- All 98 days pre-populated
-
-#### Sheet 4: Race Day Prep
-**Purpose:** Checklist for final week
-
-**Content Sections:**
-1. Week Before Race checklist
-2. 2 Days Before checklist
-3. Day Before checklist
-4. Race Morning checklist
-5. Race Strategy with target splits
-6. Post-Race checklist
-
-**Format:** Two columns (checkbox column + description column)
-
-### 4.2 Calculation Features
-
-**Auto-calculations needed:**
-- Weekly completion percentage (Runs Completed / 4 * 100)
-- No complex formulas - keep simple for user editing
-
-### 4.3 User Experience
-
-**Principles:**
-- Clean, minimal formatting
-- Easy to update on phone or computer
-- Clear visual progress (colored cells help)
-- No macros or complex features
-- Compatible with Google Sheets upload
-
----
 
 ## 5. Technical Requirements - Mobile App (PWA)
 
@@ -833,12 +744,12 @@ const TRAINING_PLAN = {
 
 ### 5.9 Installation Flow
 
-**For Netlify (Recommended):**
+**For Vercel (Recommended):**
 1. User downloads ZIP file
 2. Extracts to local folder
-3. Visits app.netlify.com/drop
+3. Visits vercel.com
 4. Drags folder to drop zone
-5. Gets live URL (e.g., https://run-tracker-xyz.netlify.app)
+5. Gets live URL (e.g., https://run-tracker-xyz.vercel.app)
 6. Opens URL on phone in Chrome
 7. Chrome menu → "Install app" or "Add to Home Screen"
 8. App icon appears on home screen
@@ -907,10 +818,10 @@ const TRAINING_PLAN = {
 
 ### 6.2 Mobile App
 
-**Hosting Options (Recommend Netlify):**
+**Hosting Options (Recommend Vercel):**
 
-**Option 1: Netlify Drop (Easiest - 2 mins)**
-- Go to app.netlify.com/drop
+**Option 1: Vercel Drop (Easiest - 2 mins)**
+- Go to vercel.com
 - Drag folder with 4 files
 - Get instant live URL
 - Free forever
@@ -1359,7 +1270,7 @@ const TRAINING_PLAN = {
 **Modification Process:**
 - Download source files
 - Edit HTML/CSS/JS
-- Re-upload to Netlify/GitHub
+- Re-upload to Vercel/GitHub
 - Update installation
 
 **Or:**
@@ -1487,7 +1398,7 @@ const TRAINING_PLAN = {
 ### 18.3 Quick Reference URLs
 
 **For Installation:**
-- Netlify Drop: app.netlify.com/drop
+- Vercel Drop: vercel.com
 - GitHub Pages: github.com
 
 **For Support:**
@@ -1581,3 +1492,20 @@ This is not a general-purpose running app. This is a specific tool for a specifi
 **Remember:** The app is not the achievement. The 56 runs are the achievement. The app just makes them visible.
 
 🏃‍♂️ Good luck, Shivi. You've got this.
+
+---
+
+## IMPORTANT NOTE
+
+This document contains the **original requirements** for the project. The **actual implementation** differs in some ways:
+
+- **Excel Tracker:** NOT built (see Section 4)
+- **Hosting:** Vercel and GitHub used (as planned)
+- **Additional Features:** Delete functionality added in v1.1
+
+**For current implementation status and features, see:**
+- `PROJECT_STATUS.md` - Complete implementation details
+- `TODO.md` - Progress tracking and future enhancements
+- `README.md` - Installation and usage guide
+
+**Last Updated:** January 10, 2026

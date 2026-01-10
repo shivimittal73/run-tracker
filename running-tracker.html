@@ -256,6 +256,29 @@
             margin-top: 8px;
         }
 
+        .run-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .delete-run-btn {
+            background: #F44336;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 500;
+        }
+
+        .delete-run-btn:active {
+            background: #D32F2F;
+        }
+
         .week-filters {
             display: flex;
             gap: 8px;
@@ -1258,7 +1281,10 @@
 
                     return `
                         <div class="run-item completed">
-                            <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                            <div class="run-item-header">
+                                <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                                <button class="delete-run-btn" onclick="deleteRun(${run.id})">Delete</button>
+                            </div>
                             <div class="run-details">${run.distance}km • ${run.duration} min • ${feeling}</div>
                             <div class="run-pace">Pace: ${formatPace(run.pace)}/km</div>
                             ${run.notes ? `<div class="run-notes">${run.notes}</div>` : ''}
@@ -1267,7 +1293,10 @@
                 } else {
                     return `
                         <div class="run-item missed">
-                            <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                            <div class="run-item-header">
+                                <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                                <button class="delete-run-btn" onclick="deleteRun(${run.id})">Delete</button>
+                            </div>
                             <div class="run-details">❌ Missed run</div>
                             ${run.missedReason ? `<div class="run-notes">${run.missedReason}</div>` : ''}
                         </div>
@@ -1318,7 +1347,10 @@
 
                     return `
                         <div class="run-item completed">
-                            <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                            <div class="run-item-header">
+                                <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                                <button class="delete-run-btn" onclick="deleteRun(${run.id})">Delete</button>
+                            </div>
                             <div class="run-details">${run.distance}km • ${run.duration} min • ${feeling}</div>
                             <div class="run-pace">Pace: ${formatPace(run.pace)}/km</div>
                             ${run.notes ? `<div class="run-notes">${run.notes}</div>` : ''}
@@ -1327,13 +1359,40 @@
                 } else {
                     return `
                         <div class="run-item missed">
-                            <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                            <div class="run-item-header">
+                                <div class="run-date">Week ${run.week} • ${dateStr}</div>
+                                <button class="delete-run-btn" onclick="deleteRun(${run.id})">Delete</button>
+                            </div>
                             <div class="run-details">❌ Missed run</div>
                             ${run.missedReason ? `<div class="run-notes">${run.missedReason}</div>` : ''}
                         </div>
                     `;
                 }
             }).join('');
+        }
+
+        function deleteRun(runId) {
+            // Confirm deletion
+            if (!confirm('Are you sure you want to delete this run? This cannot be undone.')) {
+                return;
+            }
+
+            // Get current runs
+            let runs = JSON.parse(localStorage.getItem('runs') || '[]');
+
+            // Filter out the run to delete
+            runs = runs.filter(r => r.id !== runId);
+
+            // Save back to localStorage
+            localStorage.setItem('runs', JSON.stringify(runs));
+
+            // Update all views
+            updateHistory();
+            updateDashboard();
+            generateTrainingPlan();
+
+            // Show confirmation
+            alert('Run deleted successfully!');
         }
 
         function updateReflections() {

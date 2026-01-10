@@ -55,6 +55,9 @@
 - [x] Form validation
 - [x] Bottom navigation with 5 tabs
 - [x] Auto-expand current week in Plan view
+- [x] Delete functionality for logged runs (v1.1)
+- [x] Confirmation dialog before deletion
+- [x] Auto-refresh all views after deletion
 
 ### Deployment & Documentation
 - [x] GitHub repository created
@@ -275,7 +278,7 @@
 
 ### High Priority (If Needed)
 - [ ] Data export to CSV functionality
-- [ ] Edit logged runs feature
+- [x] Delete logged runs feature (v1.1 - Completed!)
 - [ ] Manual backup/restore via JSON download
 - [ ] Print-friendly training summary
 
@@ -309,7 +312,7 @@
 *None reported yet*
 
 ### Potential Improvements
-- [ ] Add confirmation dialog before deleting data (if delete feature added)
+- [x] Add confirmation dialog before deleting data (v1.1 - Done!)
 - [ ] Add "How many runs did you plan?" to weekly reflection
 - [ ] Consider adding weekly mileage summary
 - [ ] Add "Export to screenshot" helper feature
