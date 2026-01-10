@@ -1,26 +1,4 @@
 {
-  "version": 2,
-  "name": "jp-morgan-training",
-  "builds": [
-    {
-      "src": "jp-custom-trainer.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "custom-manifest.json",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "custom-sw.js",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
   "headers": [
     {
       "source": "custom-sw.js",
