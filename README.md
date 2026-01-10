@@ -4,9 +4,11 @@ A Progressive Web App (PWA) designed to track your 14-week training journey for 
 
 ## Features
 
-- **Dashboard**: Real-time race countdown, weekly progress tracking, and overall training statistics
+- **Home (Dashboard)**: Real-time race countdown, weekly progress tracking, and overall training statistics
+- **Plan**: View all 14 weeks with scheduled runs, track progress against targets (X/56 completed)
 - **Run Logging**: Easily log completed runs or missed workouts with notes
-- **History**: View all your training history with week-by-week filtering
+- **Analytics**: Pace trends chart, weekly volume chart, weekly run count, and summary statistics
+- **History**: View all your training history with week-by-week filtering, delete incorrect runs
 - **Weekly Reflections**: Track what's working and what's challenging
 - **Offline Support**: Works completely offline after first load
 - **No Account Required**: All data stored locally on your device (privacy-first)
@@ -72,12 +74,28 @@ A Progressive Web App (PWA) designed to track your 14-week training journey for 
 - See overall stats: total runs, kilometers, average pace, and streak
 - Quick access to today's planned workout
 
+### Plan Screen
+- View all 14 weeks in accordion format (color-coded by training phase)
+- See overall progress (X/56 runs completed) with visual progress bar
+- Track per-week completion (X/4 runs per week)
+- View scheduled runs with target paces
+- See checkmarks (✅/❌) for completed/missed runs
+- Compare actual pace vs target pace for each run
+- Current week auto-expands on load
+
 ### Log Run Screen
 - Select the date (defaults to today)
 - Mark if you completed the run or missed it
 - If completed: Enter duration, distance, how it felt, and optional notes
 - If missed: Optionally note why (helps identify patterns)
 - Pace is calculated automatically
+
+### Analytics Screen
+- **Pace Trend Chart**: Line chart showing your pace progression (last 10 runs)
+- **Weekly Volume**: Bar chart showing total kilometers per week
+- **Weekly Run Count**: Bar chart showing completed runs per week (X/4)
+- **Summary Stats**: Fastest pace, slowest pace, total distance, total time
+- All charts update in real-time as you log runs
 
 ### History Screen
 - View all logged runs in chronological order
@@ -180,10 +198,16 @@ This is a personal training tracker with no external support system. All functio
 
 ## Version
 
-**Version:** 1.0
-**Created:** January 2026
+**Current Version:** 1.2
+**Created:** January 10, 2026
+**Last Updated:** January 10, 2026
 **Race Date:** April 16, 2026
 **First Training Run:** January 13, 2026
+
+**Version History:**
+- **v1.0:** Initial release with 5 core screens (Home, Plan, Log, History, Reflect)
+- **v1.1:** Added delete functionality for logged runs with confirmation dialog
+- **v1.2:** Added Analytics screen with pace trends, weekly volume charts, and summary stats; fixed PWA caching issue
 
 ---
 

@@ -389,6 +389,34 @@ vercel --prod --yes
 **Deployment:**
 - Deployed to Vercel production
 
+### v1.2 (January 10, 2026)
+**Status:** ✅ Deployed
+
+**Features:**
+- **NEW Analytics Screen** with advanced training insights
+  - Pace trend chart (SVG line chart showing last 10 runs)
+  - Weekly volume chart (bar chart showing km per week)
+  - Weekly run count chart (completed runs per week)
+  - Summary statistics: fastest pace, slowest pace, total distance, total time
+- Added 6th navigation tab for Analytics (📈)
+- Renamed Dashboard tab to "Home" for space optimization
+- All charts use pure CSS/SVG (no external libraries)
+- Charts update in real-time as runs are logged
+- Empty states with helpful messages when no data available
+
+**Bug Fixes:**
+- Updated service worker cache from v1 to v2
+- Fixes PWA caching issue where delete button wasn't visible in installed app
+- Forces cache refresh to show latest changes
+
+**Commits:**
+1. Add Analytics screen with pace trends, weekly volume, and run count charts
+2. Fix service worker caching issue
+
+**Deployment:**
+- Deployed to Vercel production
+- New URL: https://run-tracker-6dhbg3bqw-shivis-projects-622df19e.vercel.app
+
 ---
 
 ## Future Considerations (Post-Race)

@@ -1,7 +1,7 @@
 # JP Morgan Run Training Tracker - TODO & Progress Tracking
 
 **Last Updated:** January 10, 2026
-**Current Version:** 1.0
+**Current Version:** 1.2
 **Training Start Date:** January 13, 2026
 **Race Date:** April 16, 2026
 
@@ -284,7 +284,7 @@
 
 ### Medium Priority (Nice to Have)
 - [ ] Dark mode theme
-- [ ] Advanced statistics (pace trends, weekly volume charts)
+- [x] Advanced statistics (pace trends, weekly volume charts) (v1.2 - Completed!)
 - [ ] Multi-race support (reuse for future races)
 - [ ] Weather notes per run
 - [ ] Photo attachments for runs
@@ -393,23 +393,33 @@
 
 ## 🚀 Version Planning
 
-### v1.0 (Current)
-**Status:** ✅ Deployed
+### v1.0
+**Status:** ✅ Deployed (Jan 10, 2026)
 **Features:** Complete PWA with progress tracking
 
-### v1.1 (Potential - If Requested During Training)
-**Status:** Not started
-**Potential Features:**
-- Quick data export
-- Edit logged runs
-- Enhanced dashboard widgets
+### v1.1
+**Status:** ✅ Deployed (Jan 10, 2026)
+**Features:**
+- Delete functionality for logged runs
+- Confirmation dialog before deletion
+- Auto-refresh all views after deletion
+
+### v1.2 (Current)
+**Status:** ✅ Deployed (Jan 10, 2026)
+**Features:**
+- Analytics screen with pace trends
+- Weekly volume charts
+- Weekly run count charts
+- Summary statistics (fastest/slowest pace, total distance/time)
+- Fixed PWA caching issue (service worker v2)
 
 ### v2.0 (Post-Race - If Continuing)
 **Status:** Future consideration
 **Potential Features:**
 - Multi-race support
-- Advanced analytics
+- Data export to CSV
 - Cloud backup option
+- Dark mode
 
 ---
 
