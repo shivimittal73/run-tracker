@@ -1,26 +1,32 @@
-const CACHE_NAME = 'run-tracker-v4';
+// Service Worker for JP Morgan Custom Trainer
+// Version 2.0.0 - Updated for cache refresh
+
+const CACHE_NAME = 'jp-custom-trainer-v3';
 const urlsToCache = [
-  '/running-tracker.html',
-  '/manifest.json'
+  '/jp-custom-trainer.html',
+  '/manifest.json',
+  '/index.html'
 ];
 
-// Install event - cache files
-self.addEventListener('install', function(event) {
+// Install event - cache resources and skip waiting
+self.addEventListener('install', event => {
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
+
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(function(cache) {
-        console.log('Opened cache');
+      .then(cache => {
+        console.log('Cache opened - v2');
         return cache.addAll(urlsToCache);
       })
   );
-  self.skipWaiting();
 });
 
 // Fetch event - network first, fallback to cache for offline support
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request)
-      .then(function(response) {
+      .then(response => {
         // Check if valid response
         if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
@@ -29,32 +35,35 @@ self.addEventListener('fetch', function(event) {
         // Clone and cache the response for offline use
         const responseToCache = response.clone();
         caches.open(CACHE_NAME)
-          .then(function(cache) {
+          .then(cache => {
             cache.put(event.request, responseToCache);
           });
 
         return response;
       })
-      .catch(function() {
+      .catch(() => {
         // Network failed, try cache
         return caches.match(event.request);
       })
   );
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', function(event) {
-  const cacheWhitelist = [CACHE_NAME];
+// Activate event - clean up old caches and take control immediately
+self.addEventListener('activate', event => {
+  // Take control of all pages immediately
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map(function(cacheName) {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      // Take control of all clients immediately
+      return self.clients.claim();
     })
   );
-  return self.clients.claim();
 });

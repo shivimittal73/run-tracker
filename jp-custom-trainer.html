@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="JP Morgan Trainer">
-    <link rel="manifest" href="custom-manifest.json">
+    <link rel="manifest" href="manifest.json">
     <title>🏃‍♀️🏃‍♂️ JP Morgan 5.6K Training</title>
 
     <style>
@@ -4457,7 +4457,7 @@
                 }, 500);
             } else {
                 // Normal service worker registration
-                navigator.serviceWorker.register('custom-sw.js')
+                navigator.serviceWorker.register('sw.js')
                     .then(reg => console.log('Service Worker registered'))
                     .catch(err => console.log('Service Worker registration failed:', err));
             }
