@@ -914,7 +914,9 @@
 
         .nav-icon.log-icon {
             color: #ff4757;
-            font-weight: bold;
+            font-weight: 900;
+            font-size: 32px;
+            line-height: 1;
         }
 
         .nav-label {
@@ -2031,7 +2033,7 @@
             <div class="card" style="margin-top: 16px;">
                 <div class="card-header">App Info</div>
                 <div style="font-size: 14px; color: rgba(255, 255, 255, 0.75); line-height: 1.6;">
-                    <div style="margin-bottom: 8px;"><strong>Version:</strong> 1.3 (Jan 2026)</div>
+                    <div style="margin-bottom: 8px;"><strong>Version:</strong> 1.4 (Jan 2026)</div>
                     <div style="margin-bottom: 8px;"><strong>Race Date:</strong> April 16, 2026</div>
                     <div style="margin-bottom: 8px;"><strong>Data Storage:</strong> Local (device only)</div>
                 </div>
@@ -2067,7 +2069,7 @@
             <span class="nav-label">Plan</span>
         </div>
         <div class="nav-item" onclick="switchScreen('log')">
-            <span class="nav-icon log-icon">➕</span>
+            <span class="nav-icon log-icon">+</span>
             <span class="nav-label">Log</span>
         </div>
         <div class="nav-item" onclick="switchScreen('analytics')">
@@ -4432,7 +4434,7 @@
 
         // Force update - clear old service workers and cache
         if ('serviceWorker' in navigator) {
-            const APP_VERSION = '1.3';
+            const APP_VERSION = '1.4';
             const storedVersion = localStorage.getItem('appVersion');
 
             // If version doesn't match, force complete update
