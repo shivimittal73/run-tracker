@@ -1,4 +1,4 @@
-const CACHE_NAME = 'run-tracker-v3';
+const CACHE_NAME = 'run-tracker-v4';
 const urlsToCache = [
   '/running-tracker.html',
   '/manifest.json'
@@ -16,18 +16,29 @@ self.addEventListener('install', function(event) {
   self.skipWaiting();
 });
 
-// Fetch event - serve from cache when offline
+// Fetch event - network first, fallback to cache for offline support
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(function(response) {
-        // Cache hit - return response
-        if (response) {
+        // Check if valid response
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-        return fetch(event.request);
-      }
-    )
+
+        // Clone and cache the response for offline use
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME)
+          .then(function(cache) {
+            cache.put(event.request, responseToCache);
+          });
+
+        return response;
+      })
+      .catch(function() {
+        // Network failed, try cache
+        return caches.match(event.request);
+      })
   );
 });
 
